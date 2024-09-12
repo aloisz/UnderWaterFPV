@@ -13,12 +13,14 @@ namespace PlayerController
 
         internal PC_OnLand _pcOnLand;
         internal PC_OnWater _pcOnWater;
+        internal PC_Input input;
         internal Rigidbody rb;
         private void Start()
         {
             rb = transform.GetComponent<Rigidbody>();
             _pcOnLand = transform.GetComponent<PC_OnLand>();
             _pcOnWater = transform.GetComponent<PC_OnWater>();
+            input = transform.GetComponent<PC_Input>();
             ChangeState(PC_State.OnLand);
         }
         

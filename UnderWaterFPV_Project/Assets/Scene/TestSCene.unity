@@ -1684,7 +1684,7 @@ Transform:
   m_GameObject: {fileID: 2056989719}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 4.58, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1729,7 +1729,76 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 56b09ec98ece8514fa3ca90370f4fb3f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  force: 4
+  force: 15
+  gravity: 5
+  drags:
+  - 1.5
+  forceAnim:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0.020566683
+      value: 84.99552
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 0.54498714
+      value: 149.29724
+      inSlope: 0.35728398
+      outSlope: 0.35728398
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.10025707
+    - serializedVersion: 3
+      time: 8
+      value: 1.016696
+      inSlope: -19.237944
+      outSlope: -19.237944
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.05655527
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  dragsAnim:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: -0.041131105
+      value: 0.037978172
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0
+    - serializedVersion: 3
+      time: 3.5503554
+      value: 6.5423555
+      inSlope: 0.07106049
+      outSlope: 0.07106049
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0
+      outWeight: 0.14157236
+    - serializedVersion: 3
+      time: 8
+      value: 0
+      inSlope: -0.047571335
+      outSlope: -0.047571335
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.17720893
+      outWeight: 0
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!114 &2056989727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1764,7 +1833,7 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
+  m_UseGravity: 0
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 80

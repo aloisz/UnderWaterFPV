@@ -7,6 +7,7 @@ namespace PlayerController
     public class PC_Input : MonoBehaviour
     {
         private PC _pc;
+        internal Vector3 dir;
         private void Start()
         {
             _pc = transform.GetComponent<PC>();
@@ -26,16 +27,7 @@ namespace PlayerController
 
             float horizontal = Input.GetAxisRaw("Horizontal");
             float vertical = Input.GetAxisRaw("Vertical");
-            Vector3 dir = new Vector3(horizontal, 0, vertical);
-            
-            if (_pc.PCState == PC_State.OnLand)
-            {
-                _pc._pcOnLand.Move(dir.normalized);
-            }
-            else
-            {
-                
-            }
+            dir = new Vector3(horizontal, 0, vertical).normalized;
         }
     }
 }

@@ -10,6 +10,12 @@ namespace PlayerController
     {
         private PC _pc;
         [SerializeField] private float force;
+        [SerializeField] private float gravity;
+        [SerializeField] private float[] drags;
+
+
+        [SerializeField] private AnimationCurve forceAnim;
+        [SerializeField] private AnimationCurve dragsAnim;
         private void Start()
         {
             _pc = transform.GetComponent<PC>();
@@ -19,10 +25,27 @@ namespace PlayerController
         {
         
         }
-
-        internal void Move(Vector3 dir)
+        private void FixedUpdate()
         {
-            if (_pc.rb.velocity.magnitude <= 8) _pc.rb.AddForce(dir * force, ForceMode.Force);
+            Move();
+            Gravity();
+            Drag();
+        }
+        
+
+        private void Move()
+        {
+            if (_pc.rb.velocity.magnitude <= 8) _pc.rb.AddForce(_pc.input.dir * forceAnim.Evaluate(_pc.rb.velocity.magnitude), ForceMode.Force);
+        }
+        
+        private void Gravity()
+        {
+            _pc.rb.AddForce(Vector3.down * gravity); 
+        }
+        
+        private void Drag()
+        {
+            _pc.rb.drag = drags[0];
         }
     }
 
