@@ -11,8 +11,6 @@ namespace PlayerController
         private PC _pc;
         [SerializeField] private float force;
         [SerializeField] private float gravity;
-        [SerializeField] private float[] drags;
-
 
         [SerializeField] private AnimationCurve forceAnim;
         [SerializeField] private AnimationCurve dragsAnim;
@@ -23,7 +21,7 @@ namespace PlayerController
         
         private void Update()
         {
-        
+            
         }
         private void FixedUpdate()
         {
@@ -37,15 +35,28 @@ namespace PlayerController
         {
             if (_pc.rb.velocity.magnitude <= 8) _pc.rb.AddForce(_pc.input.dir * forceAnim.Evaluate(_pc.rb.velocity.magnitude), ForceMode.Force);
         }
+
+        private bool CheckIfGrounded()
+        {
+            bool touchedGround = false;
+            RaycastHit hit;
+            
+            if (!Physics.Raycast(transform.position, -transform.up, out hit, 1)) return touchedGround;
+            Debug.DrawRay(transform.position, -transform.up * 1, Color.red);
+            touchedGround = hit.transform.GetComponent<Collider>();
+            
+            return touchedGround;
+        }
         
         private void Gravity()
         {
-            _pc.rb.AddForce(Vector3.down * gravity); 
+            _pc.rb.AddForce(Vector3.down * gravity, ForceMode.Force); 
         }
         
         private void Drag()
         {
-            _pc.rb.drag = drags[0];
+            if (CheckIfGrounded()) _pc.rb.drag = dragsAnim.Evaluate(_pc.rb.velocity.magnitude);
+            else _pc.rb.drag = 0;
         }
     }
 
