@@ -6,28 +6,33 @@ using UnityEngine;
 
 namespace PlayerController
 {
-    public class PC : MonoBehaviour
+    public class PC_Manager : MonoBehaviour
     {
+        [SerializeField] internal Transform playerCamera;
         [SerializeField] internal Transform eyePos;
         [SerializeField] internal PC_State PCState;
 
-        internal PC_OnLand _pcOnLand;
-        internal PC_OnWater _pcOnWater;
+        internal PCManagerOnLand PCManagerOnLand;
+        internal PCManagerOnWater PCManagerOnWater;
         internal PC_Input input;
         internal Rigidbody rb;
+        
+        internal Vector3 moveDirection = Vector3.zero;
+        internal float rotationX = 0;
+        [SerializeField] internal bool canMove;
         private void Start()
         {
             rb = transform.GetComponent<Rigidbody>();
-            _pcOnLand = transform.GetComponent<PC_OnLand>();
-            _pcOnWater = transform.GetComponent<PC_OnWater>();
+            PCManagerOnLand = transform.GetComponent<PCManagerOnLand>();
+            PCManagerOnWater = transform.GetComponent<PCManagerOnWater>();
             input = transform.GetComponent<PC_Input>();
             ChangeState(PC_State.OnLand);
         }
         
+        
         private void Update()
         {
             StateHandler();
-
         }
 
         private void StateHandler()
@@ -49,13 +54,13 @@ namespace PlayerController
         {
             if (newState == PC_State.OnLand)
             {
-                _pcOnLand.enabled = true;
-                _pcOnWater.enabled = false;
+                PCManagerOnLand.enabled = true;
+                PCManagerOnWater.enabled = false;
             }
             else
             {
-                _pcOnLand.enabled = false;
-                _pcOnWater.enabled = true;
+                PCManagerOnLand.enabled = false;
+                PCManagerOnWater.enabled = true;
             }
             
             return this.PCState = newState;
