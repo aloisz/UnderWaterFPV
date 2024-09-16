@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using PlayerController;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 
 namespace PlayerController
@@ -14,9 +15,16 @@ namespace PlayerController
         [SerializeField] internal float lookSpeed = 2.0f;
         [SerializeField] internal float lookXLimit = 45.0f;
 
-        [Space]
+        [SerializeField] internal float gravity = 9.81f;
+        
+        [Space] 
+        [SerializeField] internal float maxSpeedMagnitude;
+        [SerializeField] internal bool isRunning;
         [SerializeField] internal float walkSpeed = 6;
         [SerializeField] internal float runSpeed = 12;
+        [SerializeField] internal bool canJump;
+        [SerializeField] internal bool isJumping;
+        [SerializeField] internal float jumpForce = 500;
     
         internal virtual void Start()
         {
@@ -26,18 +34,24 @@ namespace PlayerController
         internal void Update()
         {
             HandleCameraRot();
+            
+            isJumping = Input.GetKey(KeyCode.Space);
+            isRunning = Input.GetKey(KeyCode.LeftShift);
         }
 
         private Vector3 HandleDirInput()
         {
             Vector3 forward = transform.TransformDirection(Vector3.forward);
             Vector3 right = transform.TransformDirection(Vector3.right);
+
+            float targetSpeed = _pcManager.canMove ? (isRunning ? runSpeed : walkSpeed) : 0;
+            float curSpeedX = Input.GetAxis("Vertical");
+            float curSpeedY = Input.GetAxis("Horizontal");
             
-            bool isRunning = Input.GetKey(KeyCode.LeftShift);
-            float curSpeedX = _pcManager.canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Vertical") : 0;
-            float curSpeedY = _pcManager.canMove ? (isRunning ? runSpeed : walkSpeed) * Input.GetAxis("Horizontal") : 0;
-            float movementDirectionY = _pcManager.moveDirection.y;
-            _pcManager.moveDirection = (forward * curSpeedX) + (right * curSpeedY);
+            Vector3 movementDirection = (forward * curSpeedX) + (right * curSpeedY);
+            if (movementDirection.magnitude > 1) movementDirection.Normalize();
+            
+            _pcManager.moveDirection = movementDirection * targetSpeed;
             
             return _pcManager.moveDirection;
         }
@@ -54,35 +68,49 @@ namespace PlayerController
         {
             MovePC();
             Gravity();
+            Jump();
             Drag();
         }
         
 
         internal virtual void MovePC()
         {
-            _pcManager.rb.AddForce(HandleDirInput(), ForceMode.Force);
+            if(_pcManager.rb.velocity.magnitude > maxSpeedMagnitude) return;
+            _pcManager.rb.AddForce(HandleDirInput(), ForceMode.Impulse);
         }
 
         internal virtual bool CheckIfGrounded()
         {
-            bool touchedGround = false;
+            canJump = false;
             RaycastHit hit;
+
+            if (Physics.Raycast(transform.position, -transform.up, out hit, 1.2f))
+            {
+                Debug.DrawRay(transform.position, -transform.up * 1, Color.red);
+                canJump = hit.transform.GetComponent<Collider>();
+            };
+            return canJump;
+        }
+
+        internal virtual void Jump()
+        {
+            if (!CheckIfGrounded()) return;
             
-            if (!Physics.Raycast(transform.position, -transform.up, out hit, 1)) return touchedGround;
-            Debug.DrawRay(transform.position, -transform.up * 1, Color.red);
-            touchedGround = hit.transform.GetComponent<Collider>();
             
-            return touchedGround;
+            if (isJumping)
+            {
+                _pcManager.rb.AddForce(Vector3.up * jumpForce, ForceMode.Force);
+            }
         }
         
         internal virtual void Gravity()
         {
-            _pcManager.rb.AddForce(Vector3.down * 9.81f, ForceMode.Force); 
+            _pcManager.rb.AddForce(Vector3.down * gravity, ForceMode.Force); 
         }
         
         internal virtual void Drag()
         {
-            _pcManager.rb.drag = 0;
+            _pcManager.rb.drag = CheckIfGrounded() ? 4 : 1;
         }
     }
 }

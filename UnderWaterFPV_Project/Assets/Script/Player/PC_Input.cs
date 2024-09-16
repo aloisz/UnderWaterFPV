@@ -23,11 +23,6 @@ namespace PlayerController
             {
                 _pcManager.ChangeState(PC_State.OnWater);
             }
-
-
-            /*float horizontal = Input.GetAxisRaw("Horizontal");
-            float vertical = Input.GetAxisRaw("Vertical");
-            dir = new Vector3(horizontal, 0, vertical).normalized;*/
         }
     }
 }
