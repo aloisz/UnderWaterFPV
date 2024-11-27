@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using NaughtyAttributes;
 using PlayerController;
 using UnityEngine;
 using UnityEngine.Serialization;
@@ -10,28 +11,31 @@ namespace PlayerController
 {
     public class PC_Controller : MonoBehaviour
     {
-        private PC_Manager _pcManager;
+        internal PC_Manager _pcManager;
         
         [SerializeField] internal float lookSpeed = 2.0f;
         [SerializeField] internal float lookXLimit = 45.0f;
 
         [SerializeField] internal float gravity = 9.81f;
+        internal float baseGravity;
+        [SerializeField] internal float[] drags;
         
         [Space] 
         [SerializeField] internal float maxSpeedMagnitude;
-        [SerializeField] internal bool isRunning;
+        [ReadOnly][SerializeField] internal bool isRunning;
         [SerializeField] internal float walkSpeed = 6;
         [SerializeField] internal float runSpeed = 12;
-        [SerializeField] internal bool canJump;
-        [SerializeField] internal bool isJumping;
+        [ReadOnly][SerializeField] internal bool canJump;
+        [ReadOnly][SerializeField] internal bool isJumping;
         [SerializeField] internal float jumpForce = 500;
     
         internal virtual void Start()
         {
             _pcManager = transform.GetComponent<PC_Manager>();
+            baseGravity = gravity;
         }
 
-        internal void Update()
+        internal virtual void Update()
         {
             HandleCameraRot();
             
@@ -110,7 +114,7 @@ namespace PlayerController
         
         internal virtual void Drag()
         {
-            _pcManager.rb.drag = CheckIfGrounded() ? 4 : 1;
+            _pcManager.rb.drag = CheckIfGrounded() ? (_pcManager.rb.velocity.magnitude < 3 ? drags[0] : drags[1]) : drags[2];
         }
     }
 }
